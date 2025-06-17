@@ -9,7 +9,7 @@ require('dotenv').config();
 
 
 app.use(cors({
-  origin: "http://localhost:1234" // your React app's origin
+  origin: ["http://localhost:1234", "https://fitpage.netlify.app"]// your React app's origin
 }));
 
 // Middleware
