@@ -27,9 +27,13 @@ const db = mysql.createPool({
   port: process.env.DB_PORT,
 });
 
-db.connect((err) => {
-  if (err) throw err;
-  console.log('✅ MySQL Connected');
+db.getConnection((err, connection) => {
+  if (err) {
+    console.error("❌ Error connecting to DB:", err);
+  } else {
+    console.log("✅ Connected to DB");
+    connection.release(); 
+  }
 });
 
 // Multer setup
