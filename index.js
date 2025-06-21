@@ -100,7 +100,10 @@ app.post("/api/register", async (req, res) => {
       if (err.code === "ER_DUP_ENTRY") {
         return res.status(400).json({ error: "Email already exists" });
       }
-      return res.status(500).json({ error: "Database error" });
+      else{
+        console.error("MySQL Query Error:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
     }
     res.status(201).json({ message: "User registered successfully" });
   });
@@ -115,7 +118,10 @@ app.post("/api/login", (req, res) => {
 
   const sql = "SELECT * FROM users WHERE email = ?";
   db.query(sql, [email], async (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error" });
+    if (err) {
+      console.error("MySQL Query Error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
     if (results.length === 0)
       return res.status(401).json({ error: "Invalid credentials" });
 
@@ -138,11 +144,16 @@ app.post("/api/add", (req, res) => {
 
   const sql = "INSERT INTO products (name, image_url) VALUES (?, ?)";
   db.query(sql, [name, imageUrl], (err, result) => {
-    if (err) return res.status(500).json({ error: "Failed to add product" });
+    if (err){
+      console.error("MySQL Query Error:", err);
+      return res.status(500).json({ error: "Failed to add product" });
+    }
+    else{
     res.status(201).json({
       message: "Product added successfully",
       productId: result.insertId,
     });
+  }
   });
 });
 
@@ -178,7 +189,10 @@ app.get("/api/products-with-reviews", (req, res) => {
   `;
 
   db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error" });
+    if (err){
+      console.error("MySQL Query Error:", err);
+      return res.status(500).json({ error: "Database error" });
+    } 
 
     const productMap = {};
 
